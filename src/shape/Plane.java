@@ -26,10 +26,12 @@ public class Plane implements Intersectable {
 
     @Override
     public Intersection intersection(Ray ray) {
+        normal.normalize();
+        ray.direction.normalize();
         Vector3f p = new Vector3f(normal);
         float vd = p.dot(ray.direction);
 
-        if (vd >= 0) return new NullIntersection();   // if one sided
+//        if (vd >= 0) return new NullIntersection();   // if one sided
         if (vd == 0) return new NullIntersection();
 
         float vo = -(vd + distance);
@@ -38,8 +40,8 @@ public class Plane implements Intersectable {
         if (t < 0) return new NullIntersection();
         if (vd > 0) normal.mul(-1);
 
-
-        return new IntersectionPoint(ray, ray.getPointAtT(t), normal, t, this);
+        ray.intersectionPoint = new IntersectionPoint(ray, ray.getPointAtT(t), normal, t, this);
+        return ray.intersectionPoint;
     }
 
     @Override

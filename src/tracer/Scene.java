@@ -19,12 +19,10 @@ public class Scene {
     }
 
     public void initViewPort(int w, int h) {
-        Vector3f lookFrom, lookAt, direction;
+        Vector3f lookFrom;
 
-        float z = 10.f;
+        float z = 0.f;
         lookFrom = new Vector3f(0.f, 0.f, z);
-//        lookAt = new Vector3f(0.f, 0.f, 0.f);
-//        direction = lookAt.sub(lookFrom);
 
         int xMin, yMax;
         xMin = -w / 2;
@@ -72,7 +70,10 @@ public class Scene {
 
     private void traceRay(Ray ray) {
         for (Intersectable o : worldObjects)
-            if (o.intersection(ray) != null) System.out.println(ray.origin);
+            if (o.intersection(ray).intersects()) {
+                ray.pixel.color = ray.intersectionPoint.object.getColor();
+                System.out.println(ray.intersectionPoint.object.getColor());
+            }
     }
 
     public void addObject(Intersectable o) {

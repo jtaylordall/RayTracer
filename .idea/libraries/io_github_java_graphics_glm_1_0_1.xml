@@ -1,0 +1,14 @@
+<component name="libraryTable">
+  <library name="io.github.java-graphics:glm:1.0.1" type="repository">
+    <properties maven-id="io.github.java-graphics:glm:1.0.1" />
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/io/github/java-graphics/glm/1.0.1/glm-1.0.1.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/jooq/joou/0.9.1/joou-0.9.1.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/io/github/java-graphics/openvr/1.0/openvr-1.0.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/net/java/dev/jna/jna/4.2.2/jna-4.2.2.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/net/java/dev/jna/jna-platform/4.2.2/jna-platform-4.2.2.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

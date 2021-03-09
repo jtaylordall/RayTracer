@@ -16,7 +16,6 @@ public class IntersectionPoint implements Intersection {
         this.ray = ray;
         this.t = t;
         this.object = object;
-        this.ray.pixel.color = object.getColor();
     }
 
     @Override
