@@ -16,4 +16,14 @@ public class Pixel {
                 new Vector3f(origin),
                 new Vector3f(direction));
     }
+
+    @Override
+    public String toString() {
+        return "Pixel{" +
+                "screenCoordinate=" + screenCoordinate +
+                ", primaryRay=" + primaryRay +
+                ", color=" + color +
+                '}';
+//        return screenCoordinate.toString();
+    }
 }

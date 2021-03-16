@@ -2,15 +2,11 @@ package shape;
 
 import org.joml.Vector2f;
 import org.joml.Vector3f;
-import ray.Intersection;
-import ray.IntersectionPoint;
-import ray.NullIntersection;
-import ray.Ray;
+import ray.*;
 
-public class Polygon implements Intersectable {
+public class Polygon extends Intersectable {
     public Vector3f[] vertices = new Vector3f[3];
     public Vector3f normal;
-    public ColorVec color;
 
     public Polygon(Vector3f v0, Vector3f v1, Vector3f v2) {
         this.vertices[0] = v0;
@@ -18,16 +14,6 @@ public class Polygon implements Intersectable {
         this.vertices[2] = v2;
 
         this.normal = calculateNormal(vertices);
-        this.color = new ColorVec();
-    }
-
-    public Polygon(Vector3f v0, Vector3f v1, Vector3f v2, ColorVec color) {
-        this.vertices[0] = v0;
-        this.vertices[1] = v1;
-        this.vertices[2] = v2;
-
-        this.normal = calculateNormal(vertices);
-        this.color = color;
     }
 
     private Vector3f calculateNormal(Vector3f[] vertices) {
@@ -38,6 +24,7 @@ public class Polygon implements Intersectable {
         j.sub(vertices[0]);
 
         i.cross(j);
+        i.normalize();
         return i;
     }
 
@@ -52,13 +39,13 @@ public class Polygon implements Intersectable {
     @Override
     public Intersection intersection(Ray ray) {
         normal.normalize();
-        Plane plane = new Plane(normal, calculateDistance(), color);
+        Plane plane = new Plane(normal, calculateDistance());
         Intersection intersection = plane.intersection(ray);
 
-        if (!intersection.intersects()) return new NullIntersection();
+        if (intersection.intersects() == Intersection.Interaction.SPACE) return new NullIntersection();
         IntersectionPoint intersectionPoint = (IntersectionPoint) intersection;
-        Vector3f point = intersectionPoint.point;
 
+        Vector3f point = intersectionPoint.point;
 //        if (ray.pixel.screenCoordinate.x == 150 && ray.pixel.screenCoordinate.y == 150) {
 //            System.out.println();
 //        }
@@ -66,7 +53,10 @@ public class Polygon implements Intersectable {
         Vector2f[] pVertices = getPlaneProjection(point);
         int numCrossings = numCrossings(pVertices);
         if (numCrossings <= 0 || numCrossings % 2 == 0) return new NullIntersection();
-        return new IntersectionPoint(ray, point, normal, intersectionPoint.t, this);
+
+        TransmissionRay transRay = new TransmissionRay(point, ray.direction, normal);
+
+        return new IntersectionPoint(ray, transRay, point, normal, intersectionPoint.t, this);
     }
 
     private int numCrossings(Vector2f[] p) {
@@ -138,11 +128,6 @@ public class Polygon implements Intersectable {
         mid.add(vertices[2]);
         mid.div(3);
         return mid.length();
-    }
-
-    @Override
-    public ColorVec getColor() {
-        return color;
     }
 
     private static class Edge2D {

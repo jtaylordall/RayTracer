@@ -1,66 +1,46 @@
 package shape;
 
 import org.joml.Vector3f;
-import ray.Intersection;
-import ray.IntersectionPoint;
-import ray.NullIntersection;
-import ray.Ray;
+import ray.*;
 
 import java.util.Random;
 
-public class Sphere implements Intersectable {
+public class Sphere extends Intersectable {
 
     public float radius;
     public Vector3f center;
-    public ColorVec color;
 
     public Sphere(float radius) {
         this.radius = radius;
         this.center = new Vector3f(0, 0, 0);
-        this.color = new ColorVec();
     }
 
     public Sphere(float radius, Vector3f center) {
         this.radius = radius;
         this.center = center;
-        this.color = new ColorVec();
-    }
-
-    public Sphere(float radius, Vector3f center, ColorVec color) {
-        this.radius = radius;
-        this.center = center;
-        this.color = color;
     }
 
     public Sphere(float radius, float x, float y, float z, int r, int g, int b) {
         this.radius = radius;
         this.center = new Vector3f(x, y, z);
-        this.color = new ColorVec(r, g, b);
     }
 
     public static Sphere newRandomSphere(int r_bound, int x_bound, int y_bound, int z_bound) {
         Random random = new Random();
-
         ColorVec colorVec = new ColorVec();
         colorVec.random();
 
-        Sphere sphere = new Sphere(
+        return new Sphere(
                 random.nextInt(r_bound),
                 new Vector3f(
                         random.nextInt(x_bound),
                         random.nextInt(y_bound),
-                        random.nextInt(z_bound)),
-                colorVec);
-
-        return sphere;
+                        random.nextInt(z_bound)));
     }
 
     @Override
     public Intersection intersection(Ray ray) {
         ray.direction.normalize();
-        if (ray.pixel.screenCoordinate.x == 0 && ray.pixel.screenCoordinate.y == 0) {
-            System.out.println("--");
-        }
         //  origin_center: oc = sc - ro
         Vector3f oc = new Vector3f(center).sub(ray.origin);
 
@@ -82,18 +62,17 @@ public class Sphere implements Intersectable {
             t = tca - thc;  //  t = tca - thc
         else
             t = tca + thc;  //  t = tca + thc
-        t -= .2f;
+//        t -= .2f;
 
         Vector3f rayT = ray.getPointAtT(t);
         Vector3f normal = new Vector3f(rayT);
         normal.sub(center);
         normal.div(radius);
+        fudgePoint(rayT, normal);
 
-        return new IntersectionPoint(ray, rayT, normal, t, this);
+        TransmissionRay transRay = new TransmissionRay(rayT, ray.direction, normal);
+
+        return new IntersectionPoint(ray, transRay, rayT, normal, t, this);
     }
 
-    @Override
-    public ColorVec getColor() {
-        return color;
-    }
 }

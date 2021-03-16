@@ -1,5 +1,11 @@
 package ray;
 
 public interface Intersection {
-    boolean intersects();
+    enum Interaction {
+        OBJECT,
+        LIGHT,
+        SPACE
+    }
+
+    Interaction intersects();
 }

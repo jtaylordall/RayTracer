@@ -2,7 +2,7 @@ package ray;
 
 public class NullIntersection implements Intersection {
     @Override
-    public boolean intersects() {
-        return false;
+    public Interaction intersects() {
+        return Interaction.SPACE;
     }
 }
