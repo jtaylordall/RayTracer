@@ -53,14 +53,13 @@ public abstract class Intersectable {
 
     public abstract Intersection intersection(Ray ray);
 
-//    public abstract Vector3f getNormal();
-
     protected void fudgePoint(Vector3f point, Vector3f normal) {
-        float fudgeAmount = .01f;
+        float fudgeAmount = .001f;
         Vector3f n = new Vector3f(normal);
         n.normalize();
         n.mul(fudgeAmount);
         point.add(n);
     }
+
 
 }

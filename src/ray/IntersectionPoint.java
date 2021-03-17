@@ -25,15 +25,4 @@ public class IntersectionPoint implements Intersection {
         return Interaction.OBJECT;
     }
 
-    @Override
-    public String toString() {
-        return "IntersectionPoint{" +
-                "srcRay=" + srcRay +
-                ", transRay=" + transRay +
-                ", point=" + point +
-                ", normal=" + normal +
-                ", t=" + t +
-                ", object=" + object +
-                '}';
-    }
 }

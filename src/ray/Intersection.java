@@ -4,7 +4,8 @@ public interface Intersection {
     enum Interaction {
         OBJECT,
         LIGHT,
-        SPACE
+        SPACE,
+        BACK_PLANE
     }
 
     Interaction intersects();

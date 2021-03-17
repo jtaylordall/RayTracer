@@ -24,6 +24,5 @@ public class Pixel {
                 ", primaryRay=" + primaryRay +
                 ", color=" + color +
                 '}';
-//        return screenCoordinate.toString();
     }
 }

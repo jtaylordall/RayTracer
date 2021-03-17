@@ -25,24 +25,44 @@ public class Plane extends Intersectable {
     @Override
     public Intersection intersection(Ray ray) {
         normal.normalize();
+        Vector3f n = new Vector3f(normal);
         ray.direction.normalize();
-        Vector3f p = new Vector3f(normal);
-        float vd = p.dot(ray.direction);
 
-        if (vd >= 0) return new NullIntersection();   // if one sided
+        float vd = ray.direction.dot(n);
         if (vd == 0) return new NullIntersection();
 
         float vo = -(vd + distance);
         float t = vo / vd;
 
-        if (t < 0) return new NullIntersection();
-        if (vd > 0) normal.mul(-1);
         Vector3f point = ray.getPointAtT(t);
 
-        fudgePoint(point, normal);
+        if (t < 0) return new NullIntersection();
+        if (vd > 0) {
+            n.mul(-1);
+            fudgePoint(point, n);
+            return new BackPlaneIntersection(point);
+        }
 
-        TransmissionRay trans = new TransmissionRay(point, ray.direction, normal);
-        ray.intersectionPoint = new IntersectionPoint(ray, trans, point, normal, t, this);
+
+        fudgePoint(point, n);
+
+        TransmissionRay trans = new TransmissionRay(point, ray.direction, n);
+        ray.intersectionPoint = new IntersectionPoint(ray, trans, point, n, t, this);
         return ray.intersectionPoint;
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("Plane{");
+        sb.append("normal=").append(normal);
+        sb.append(", distance=").append(distance);
+        sb.append(", od=").append(od);
+        sb.append(", os=").append(os);
+        sb.append(", ka=").append(ka);
+        sb.append(", kd=").append(kd);
+        sb.append(", ks=").append(ks);
+        sb.append(", kGls=").append(kGls);
+        sb.append('}');
+        return sb.toString();
     }
 }

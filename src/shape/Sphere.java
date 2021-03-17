@@ -3,8 +3,6 @@ package shape;
 import org.joml.Vector3f;
 import ray.*;
 
-import java.util.Random;
-
 public class Sphere extends Intersectable {
 
     public float radius;
@@ -20,33 +18,15 @@ public class Sphere extends Intersectable {
         this.center = center;
     }
 
-    public Sphere(float radius, float x, float y, float z, int r, int g, int b) {
-        this.radius = radius;
-        this.center = new Vector3f(x, y, z);
-    }
-
-    public static Sphere newRandomSphere(int r_bound, int x_bound, int y_bound, int z_bound) {
-        Random random = new Random();
-        ColorVec colorVec = new ColorVec();
-        colorVec.random();
-
-        return new Sphere(
-                random.nextInt(r_bound),
-                new Vector3f(
-                        random.nextInt(x_bound),
-                        random.nextInt(y_bound),
-                        random.nextInt(z_bound)));
-    }
-
     @Override
     public Intersection intersection(Ray ray) {
         ray.direction.normalize();
+
         //  origin_center: oc = sc - ro
         Vector3f oc = new Vector3f(center).sub(ray.origin);
 
         //  closest_approach: tca = rd DOT oc
-        Vector3f temp = new Vector3f(ray.direction);
-        float tca = temp.dot(oc);
+        float tca = ray.direction.dot(oc);
 
         float oc_len = oc.length();
         boolean roIsInside = oc_len < radius;
@@ -62,12 +42,12 @@ public class Sphere extends Intersectable {
             t = tca - thc;  //  t = tca - thc
         else
             t = tca + thc;  //  t = tca + thc
-//        t -= .2f;
 
         Vector3f rayT = ray.getPointAtT(t);
         Vector3f normal = new Vector3f(rayT);
         normal.sub(center);
         normal.div(radius);
+
         fudgePoint(rayT, normal);
 
         TransmissionRay transRay = new TransmissionRay(rayT, ray.direction, normal);
@@ -75,4 +55,18 @@ public class Sphere extends Intersectable {
         return new IntersectionPoint(ray, transRay, rayT, normal, t, this);
     }
 
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("Sphere{");
+        sb.append("radius=").append(radius);
+        sb.append(", center=").append(center);
+        sb.append(", od=").append(od);
+        sb.append(", os=").append(os);
+        sb.append(", ka=").append(ka);
+        sb.append(", kd=").append(kd);
+        sb.append(", ks=").append(ks);
+        sb.append(", kGls=").append(kGls);
+        sb.append('}');
+        return sb.toString();
+    }
 }

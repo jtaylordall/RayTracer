@@ -181,11 +181,6 @@ public class ColorVec extends Vector3i {
         ColorVec specC = toColorVec(spec);
         color.add(specC);
 
-
-        if (color.z > color.x) {
-            System.out.println();
-        }
-
         ColorVec white = new ColorVec();
         white.white();
         color.clip(Scene.ambientColor, white);

@@ -17,6 +17,9 @@ public class Scene {
     private final List<Intersectable> worldObjects;
     private final List<Pixel> viewPort;
 
+    public static Matrix4f M;
+    public static Matrix4f T;
+
     public static Vector3f cameraLookFrom;
     private Vector3f cameraLookAt;
     private Vector3f cameraLookUp;
@@ -31,11 +34,11 @@ public class Scene {
     }
 
     public void setLightDirection(LightDirection lightDirection) {
-        this.lightDirection = lightDirection;
+        Scene.lightDirection = lightDirection;
     }
 
     public void setCameraLookFrom(Vector3f cameraLookFrom) {
-        this.cameraLookFrom = cameraLookFrom;
+        Scene.cameraLookFrom = cameraLookFrom;
     }
 
     public void setCameraLookAt(Vector3f cameraLookAt) {
@@ -58,40 +61,7 @@ public class Scene {
         Scene.backgroundColor = backgroundColor;
     }
 
-    public void initViewPort1(int w, int h) {
-        Vector3f lookFrom;
-
-        float z = 0.f;
-        lookFrom = new Vector3f(0.f, 0.f, z);
-
-        int xMin, yMax;
-        xMin = -w / 2;
-        yMax = h / 2;
-        float zDirection = (float) -(w + h) / 2;
-
-        for (int y = 0; y < h; y++)
-            for (int x = 0; x < w; x++) {
-
-                int x1 = x + xMin;
-                int y1 = yMax - y;
-
-                float xRatio = (float) (x1) / (-xMin);
-                float yRatio = (float) (y1) / (yMax);
-
-                float xDirection = (-xMin) * xRatio;
-                float yDirection = (yMax) * yRatio;
-
-
-                Vector3f d = new Vector3f(xDirection, yDirection, zDirection);
-                d.normalize();
-                viewPort.add(new Pixel(new Vector2i(x, y),
-                        new Vector3f(lookFrom), d));
-            }
-    }
-
     public void initViewPort(int w, int h) {
-//        cameraLookAt.normalize();
-//        cameraLookFrom.normalize();
         cameraLookUp.normalize();
 
         Vector3f vpn = new Vector3f(cameraLookFrom);
@@ -127,11 +97,15 @@ public class Scene {
                 0, 0, 0, 1
         );
 
+        M = m;
+        T = t;
+
 
         int wHalf = w / 2;
         int hHalf = h / 2;
 
-        float tan = (float) Math.tan(fov / 2 * Math.PI / 180);
+//        float tan = (float) Math.tan(fov / 2 * Math.PI / 180);
+        float tan = (float) Math.tan(fov * Math.PI / 180);
         for (int y = h - 1; y >= 0; y--) {
             for (int x = 0; x < w; x++) {
 
@@ -142,16 +116,11 @@ public class Scene {
                 Vector3f origin = new Vector3f(x1, y1, z1);
 
                 float aspectRatio = ((float) w) / ((float) h);
-                float px = ((2 * x1 / w)) * tan * aspectRatio;
-                float py = ((2 * y1 / h)) * tan;
+                float px = ((x1 / w)) * tan * aspectRatio;
+                float py = ((y1 / h)) * tan;
 
-//                System.out.printf("%f , %f :\t\t %f , %f\n", x1, y1, px, py);
-
-                Vector3f direction = new Vector3f(px, py, -2f);
-//                Vector3f direction = new Vector3f(vpn);
-//                direction.mul(-1);
+                Vector3f direction = new Vector3f(px, py, -1f);
                 direction.normalize();
-//                System.out.printf("%f , %f :\t\t %s\n", x1, y1, direction);
 
                 Vector4f o1 = new Vector4f(origin, 1);
                 o1.x /= w;
@@ -167,19 +136,14 @@ public class Scene {
                 direction.normalize();
 
                 Pixel p = new Pixel(new Vector2i(x, y), origin, direction);
-//                System.out.println(p);
-//                System.out.println();
                 viewPort.add(p);
-//                System.out.printf("%s :\t\t %s\n", origin, direction);
             }
         }
     }
 
     public void rayTrace() {
         for (Pixel pixel : viewPort) {
-            if (pixel.screenCoordinate.x == 30 && pixel.screenCoordinate.y == 25)
-                System.out.println();
-            pixel.color = pixel.primaryRay.trace(worldObjects);
+            pixel.color = pixel.primaryRay.trace(worldObjects, pixel);
         }
     }
 

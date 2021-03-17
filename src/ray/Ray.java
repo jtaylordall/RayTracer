@@ -29,32 +29,14 @@ public class Ray {
         return v;
     }
 
-    public ColorVec trace1(List<Intersectable> objects) {
-        Ray tRay = null;
-        for (Intersectable o : objects) {
-            Intersection intersection = o.intersection(this);
-            if (intersection.intersects() == Intersection.Interaction.OBJECT) {
-                IntersectionPoint point = (IntersectionPoint) intersection;
-                tRay = point.transRay;
-                tRay.depth++;
-                break;
-            } else if (intersection.intersects() == Intersection.Interaction.LIGHT && depth > 0) {
-                LightDirection l = (LightDirection) o;
-                return l.od;
-            }
-        }
-//        if (tRay != null) {
-//            ColorVec colorVec = tRay.trace(objects,);
-//            if (colorVec.equals(new ColorVec()))
-////                colorVec.black();
-//                colorVec = new ColorVec(Scene.ambientColor);
-//            return colorVec;
-//        }
-        return new ColorVec(Scene.backgroundColor);
-//        return new ColorVec();
-    }
+    public ColorVec trace(List<Intersectable> objects, Pixel pixel) {
 
-    public ColorVec trace(List<Intersectable> objects) {
+        if (pixel.screenCoordinate.x == 500 && pixel.screenCoordinate.y == 500) {
+            System.out.println();
+//            ColorVec colorVec = new ColorVec();
+//            colorVec.red();
+//            return colorVec;
+        }
 
         boolean isInShadow = false;
         IntersectionPoint closest = null;
@@ -65,8 +47,8 @@ public class Ray {
             if (intersection.intersects() == Intersection.Interaction.OBJECT) {
                 IntersectionPoint point = (IntersectionPoint) intersection;
 
-//                if (i == 0) closest = point;
-                if (closest == null || point.t < closest.t) {
+                if (i == 0) closest = point;
+                if (closest == null || point.point.z > closest.point.z) {
                     closest = point;
 
                     isInShadow = isInShadow(point, objects, Scene.lightDirection);
@@ -90,10 +72,12 @@ public class Ray {
 
         for (Intersectable o : objects) {
             Intersection i = o.intersection(new Ray(point.point, l));
-            if (point.normal.dot(l) > 0)
-                if (!o.equals(point.object))
-                    if (i.intersects() == Intersection.Interaction.OBJECT)
-                        return true;
+            if (point.normal.dot(l) > 0) {
+                if (i.intersects() == Intersection.Interaction.OBJECT ||
+                        i.intersects() == Intersection.Interaction.BACK_PLANE) {
+                    return true;
+                }
+            }
         }
         return false;
     }
@@ -101,11 +85,12 @@ public class Ray {
 
     @Override
     public String toString() {
-        return "Ray{" +
-                "origin=" + origin +
-                ", direction=" + direction +
-                ", intersectionPoint=" + intersectionPoint +
-                ", depth=" + depth +
-                '}';
+        final StringBuilder sb = new StringBuilder("Ray{");
+        sb.append("origin=").append(origin);
+        sb.append(", direction=").append(direction);
+        sb.append(", intersectionPoint=").append(intersectionPoint);
+        sb.append(", depth=").append(depth);
+        sb.append('}');
+        return sb.toString();
     }
 }

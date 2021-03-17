@@ -5,4 +5,9 @@ public class NullIntersection implements Intersection {
     public Interaction intersects() {
         return Interaction.SPACE;
     }
+
+    @Override
+    public String toString() {
+        return "NullIntersection{}";
+    }
 }
