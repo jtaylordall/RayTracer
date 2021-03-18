@@ -13,15 +13,6 @@ public class Plane extends Intersectable {
         this.distance = distance;
     }
 
-    public void setColorProperties(ColorVec od, ColorVec os, float ka, float kd, float ks, int kGls) {
-        this.od = od;
-        this.os = os;
-        this.ka = ka;
-        this.kd = kd;
-        this.ks = ks;
-        this.kGls = kGls;
-    }
-
     @Override
     public Intersection intersection(Ray ray) {
         normal.normalize();

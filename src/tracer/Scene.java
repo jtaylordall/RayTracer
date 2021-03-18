@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Scene {
+    public String name;
     public static LightDirection lightDirection;
     private final List<Intersectable> worldObjects;
     private final List<Pixel> viewPort;
@@ -28,7 +29,8 @@ public class Scene {
     public static ColorVec ambientColor;
     public static ColorVec backgroundColor;
 
-    public Scene() {
+    public Scene(String name) {
+        this.name = name;
         this.worldObjects = new ArrayList<>();
         this.viewPort = new ArrayList<>();
     }

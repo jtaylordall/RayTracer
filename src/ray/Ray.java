@@ -12,7 +12,7 @@ public class Ray {
     public Vector3f origin;
     public Vector3f direction;
     public IntersectionPoint intersectionPoint;
-    public static int MAX_DEPTH = 2;
+    public static int MAX_DEPTH = 6;
 
     public Ray(Vector3f origin, Vector3f direction) {
         this.origin = origin;
@@ -29,7 +29,6 @@ public class Ray {
     }
 
     public ColorVec trace(List<Intersectable> objects, int depth) {
-
         boolean isInShadow = false;
         IntersectionPoint closest = null;
         for (int i = 0; i < objects.size(); i++) {
@@ -40,10 +39,21 @@ public class Ray {
                 IntersectionPoint point = (IntersectionPoint) intersection;
 
                 if (i == 0) closest = point;
-                if (closest == null || point.point.z > closest.point.z) {
-                    closest = point;
 
+                if (closest == null) {
+                    closest = point;
                     isInShadow = isInShadow(point, objects, Scene.lightDirection);
+
+                } else {
+                    Vector3f dP = new Vector3f(point.point);
+                    dP.sub(origin);
+                    Vector3f dC = new Vector3f(closest.point);
+                    dC.sub(origin);
+
+                    if (dP.length() < dC.length()) {
+                        closest = point;
+                        isInShadow = isInShadow(point, objects, Scene.lightDirection);
+                    }
                 }
             }
         }
@@ -58,8 +68,9 @@ public class Ray {
 
         } else {
 
-            if (isInShadow && depth == 0) return Scene.ambientColor;
-            else if (isInShadow && depth > 0) return new ColorVec(0, 0, 0);
+//            if (isInShadow && depth == 0) return Scene.ambientColor;
+//            else if (isInShadow && depth > 0) return new ColorVec(0, 0, 0);
+            if (isInShadow) return Scene.ambientColor;
             else if (depth == MAX_DEPTH) return new ColorVec(0, 0, 0);
 
             Vector3f view = new Vector3f(origin);

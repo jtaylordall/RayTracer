@@ -150,15 +150,14 @@ public class ColorVec extends Vector3i {
 
         ColorVec color = new ColorVec(0, 0, 0);
 
-        float ka1 = 1.5f;
-        float kd1 = 2;
-        float ks1 = 2;
+        float ka1 = .5f;
+        float kd1 = 1.5f;
+        float ks1 = 1.5f;
         float kr1 = .3f;
-        int kGls1 = 2;
+        int kGls1 = 1;
 
         Vector3f ambi = calculateAmbientTerm(Scene.lightDirection.od, objDiffCol);
         ambi.mul(ka * ka1);
-//        ambi.add(toVector3f(Scene.ambientColor));
         color.add(toColorVec(ambi));
 
         Vector3f diff = calculateDiffuseTerm(n, Scene.lightDirection.getDirectionToLight(),
@@ -207,7 +206,6 @@ public class ColorVec extends Vector3i {
         n.normalize();
         l.normalize();
         float nDotL = l.dot(n);
-//        nDotL = Math.max(nDotL, .0f);
 
         Vector3f r = new Vector3f(n);
         r.mul(2);

@@ -2,32 +2,30 @@ package tracer;
 
 import export.PpmExporter;
 import org.joml.Vector3f;
-import shape.ColorVec;
-import shape.LightDirection;
-import shape.Sphere;
-import shape.Triangle;
+import shape.*;
 
 public class RayTracer {
     public static void main(String[] args) {
         int w, h;
-        w = 1000;
-        h = 1000;
+        w = 2000;
+        h = 2000;
 
         new RayTracer().rayTraceScene(w, h);
     }
 
     public void rayTraceScene(int w, int h) {
-//        Scene scene = getExampleScene1();
-        Scene scene = getExampleScene2();
-//        Scene scene = getTestScene();
+        Scene scene;
+//        scene = getExampleScene1();
+//        scene = getExampleScene2();
+        scene = getCustomScene();
         scene.initViewPort(w, h);
         scene.rayTrace();
 
-        new PpmExporter().export("rtx_test", scene.getPixelColors(), w, h);
+        new PpmExporter().export("rtx_" + scene.name + "_", scene.getPixelColors(), w, h);
     }
 
     Scene getExampleScene1() {
-        Scene scene = new Scene();
+        Scene scene = new Scene("diffuse");
         scene.setCameraLookAt(new Vector3f(0, 0, 0));
         scene.setCameraLookFrom(new Vector3f(0, 0, 1));
         scene.setCameraLookUp(new Vector3f(0, 1, 0));
@@ -101,7 +99,7 @@ public class RayTracer {
     }
 
     Scene getExampleScene2() {
-        Scene scene = new Scene();
+        Scene scene = new Scene("reflection");
         scene.setCameraLookAt(new Vector3f(0, 0, 0));
         scene.setCameraLookFrom(new Vector3f(0, 0, 1.2f));
         scene.setCameraLookUp(new Vector3f(0, 1, 0));
@@ -156,48 +154,59 @@ public class RayTracer {
         return scene;
     }
 
-    Scene getTestScene() {
-        Scene scene = new Scene();
+    Scene getCustomScene() {
+
+        Scene scene = new Scene("custom");
+
         scene.setCameraLookAt(new Vector3f(0, 0, 0));
-        scene.setCameraLookFrom(new Vector3f(0, 0, 1));
+        scene.setCameraLookFrom(new Vector3f(.2f, .5f, 1));
         scene.setCameraLookUp(new Vector3f(0, 1, 0));
-        scene.setFov(28);
+        scene.setFov(40);
 
-        LightDirection lightDirection = new LightDirection(new Vector3f(.0f, -1.f, 0.f), 50);
-        lightDirection.od = new ColorVec();
-        lightDirection.od.white();
+        LightDirection lightDirection = new LightDirection(new Vector3f(.0f, -1.f, 0f), 50);
+        lightDirection.od = new ColorVec(255, 255, 255);
         scene.setLightDirection(lightDirection);
+        scene.setAmbientColor(new ColorVec(20, 20, 20));
+        scene.setBackgroundColor(new ColorVec(50, 50, 50));
 
-        ColorVec ambient = ColorVec.toColorVec(new Vector3f(.1f, .1f, .1f));
-        scene.setAmbientColor(ambient);
-
-        ColorVec background = ColorVec.toColorVec(new Vector3f(.2f, .2f, .2f));
-        scene.setBackgroundColor(background);
-
-        Sphere sphere1 = new Sphere(.1f, new Vector3f(.0f, .0f, .0f));
+        Sphere sphere1 = new Sphere(.1f, new Vector3f(.6f, -.4f, -.3f));
         sphere1.setColorProperties(
-                ColorVec.toColorVec(new Vector3f(1.f, 0.f, 0.f)),
-                ColorVec.toColorVec(new Vector3f(1.f, 1.f, 1.f)),
-                .8f, .1f, .1f, 4);
+                new ColorVec(50, 255, 40),
+                new ColorVec(255, 255, 255),
+                .9f, .1f, .1f, 60);
         scene.addObject(sphere1);
 
-//        Polygon polygon1 = new Polygon(
-//                new Vector3f(0.f, 0.1f, -0.1f),
-//                new Vector3f(-.2f, -0.1f, 0.1f),
-//                new Vector3f(.2f, -0.1f, 0.1f)
-//        );
-//        polygon1.setColorProperties(
-//                ColorVec.toColorVec(new Vector3f(0f, 0f, 1f)),
-//                ColorVec.toColorVec(new Vector3f(1f, 1f, 1f)),
-//                .7f, .2f, .1f, 32);
-//        scene.addObject(polygon1);
+        Sphere sphere2 = new Sphere(.3f, new Vector3f(0f, -.5f, -1f));
+        sphere2.setColorProperties(
+                new ColorVec(150, 50, 50),
+                new ColorVec(255, 255, 255),
+                .6f, .8f, .2f, 40);
+        scene.addObject(sphere2);
 
-//        Plane plane = new Plane(new Vector3f(0.0f, -1f, 0f), 1.6f);
-//        plane.setColorProperties(
-//                ColorVec.toColorVec(new Vector3f(0f, 0f, 1f)),
-//                ColorVec.toColorVec(new Vector3f(1f, 1f, 1f)),
-//                .7f, .2f, .1f, 32);
-//        scene.addObject(plane);
+        Triangle triangle1 = new Triangle(
+                new Vector3f(-.7f, -.2f, 0),
+                new Vector3f(-.5f, .2f, -.2f),
+                new Vector3f(-.3f, -.2f, 0)
+        );
+        triangle1.setColorProperties(
+                new ColorVec(0, 70, 240),
+                new ColorVec(255, 255, 255),
+                1f, 0f, 1f, 4);
+        scene.addObject(triangle1);
+
+        Plane plane = new Plane(new Vector3f(0f, 0f, 1f), 4f);
+        plane.setColorProperties(
+                new ColorVec(255, 255, 255),
+                new ColorVec(1, 1, 1),
+                1f, 2f, 0f, 32);
+        scene.addObject(plane);
+
+        Plane plane2 = new Plane(new Vector3f(0f, 1f, 0f), 2f);
+        plane2.setColorProperties(
+                new ColorVec(150, 150, 150),
+                new ColorVec(1, 1, 1),
+                1f, 0f, .5f, 32);
+        scene.addObject(plane2);
 
 
         return scene;
