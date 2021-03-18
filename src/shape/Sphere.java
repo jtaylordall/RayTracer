@@ -33,26 +33,32 @@ public class Sphere extends Intersectable {
         if (tca < 0 && !roIsInside) return new NullIntersection(); //   ray does not intersect sphere
 
         //  tca dist to surface:    r^2 - ||oc||^2 + tca^2
-        float thc_sq = (radius * radius) - (oc_len * oc_len) + (tca * tca);
+        float thc_sq = (float) (Math.pow(radius, 2) - Math.pow(oc_len, 2) + Math.pow(tca, 2));
 
+        //  no intersection
         if (thc_sq < 0) return new NullIntersection();
         float thc = (float) Math.sqrt(thc_sq);
+
         float t;
         if (roIsInside)
-            t = tca - thc;  //  t = tca - thc
-        else
             t = tca + thc;  //  t = tca + thc
+        else
+            t = tca - thc;  //  t = tca - thc
 
-        Vector3f rayT = ray.getPointAtT(t);
-        Vector3f normal = new Vector3f(rayT);
+        Vector3f point = ray.getPointAtT(t);
+        Vector3f normal = calculateNormal(point);
+        fudgePoint(point, normal);
+
+        TransmissionRay transRay = new TransmissionRay(point, ray.direction, normal);
+
+        return new IntersectionPoint(ray, transRay, point, normal, t, this);
+    }
+
+    Vector3f calculateNormal(Vector3f point) {
+        Vector3f normal = new Vector3f(point);
         normal.sub(center);
         normal.div(radius);
-
-        fudgePoint(rayT, normal);
-
-        TransmissionRay transRay = new TransmissionRay(rayT, ray.direction, normal);
-
-        return new IntersectionPoint(ray, transRay, rayT, normal, t, this);
+        return normal;
     }
 
     @Override

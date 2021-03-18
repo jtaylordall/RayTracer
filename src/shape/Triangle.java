@@ -5,6 +5,7 @@ import org.joml.Vector3f;
 import ray.*;
 
 public class Triangle extends Intersectable {
+
     public Vector3f[] vertices = new Vector3f[3];
     public Vector3f normal;
 
@@ -92,7 +93,6 @@ public class Triangle extends Intersectable {
         return (b.y - a.y) / (b.x - a.x);
     }
 
-
     private float getXIntercept(float m, float x1, float y1) {
         return x1 - (y1 / m);
     }
@@ -129,12 +129,6 @@ public class Triangle extends Intersectable {
             pVertices[3] = new Vector2f(vertices[2].x, vertices[2].y);
         }
         return pVertices;
-    }
-
-    public float calculateDistance() {
-        Vector3f v = new Vector3f(0f, 0f, 0f);
-        v.sub(vertices[0]);
-        return Math.abs(v.dot(normal));
     }
 
     private static class Edge2D {

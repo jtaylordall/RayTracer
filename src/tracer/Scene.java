@@ -143,21 +143,8 @@ public class Scene {
 
     public void rayTrace() {
         for (Pixel pixel : viewPort) {
-            pixel.color = pixel.primaryRay.trace(worldObjects, pixel);
+            pixel.color = pixel.primaryRay.trace(worldObjects, 0);
         }
-    }
-
-    void printPixel(Pixel pixel) {
-        System.out.printf("vp(%d,%d)\t\tdir(%f,%f,%f)\t\tc(%d,%d,%d)\n",
-                pixel.screenCoordinate.x,
-                pixel.screenCoordinate.y,
-                pixel.primaryRay.direction.x,
-                pixel.primaryRay.direction.y,
-                pixel.primaryRay.direction.z,
-                pixel.color.x,
-                pixel.color.y,
-                pixel.color.z
-        );
     }
 
     public void addObject(Intersectable o) {

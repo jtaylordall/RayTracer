@@ -2,7 +2,10 @@ package tracer;
 
 import export.PpmExporter;
 import org.joml.Vector3f;
-import shape.*;
+import shape.ColorVec;
+import shape.LightDirection;
+import shape.Sphere;
+import shape.Triangle;
 
 public class RayTracer {
     public static void main(String[] args) {
@@ -14,7 +17,9 @@ public class RayTracer {
     }
 
     public void rayTraceScene(int w, int h) {
+//        Scene scene = getExampleScene1();
         Scene scene = getExampleScene2();
+//        Scene scene = getTestScene();
         scene.initViewPort(w, h);
         scene.rayTrace();
 
@@ -119,7 +124,7 @@ public class RayTracer {
         sphere1.setColorProperties(
                 ColorVec.toColorVec(new Vector3f(.75f, .75f, .75f)),
                 ColorVec.toColorVec(new Vector3f(1.f, 1.f, 1.f)),
-                .0f, .0f, .1f, 10);
+                .0f, .9f, .1f, 10);
         scene.addObject(sphere1);
 
         //Triangle  0 -.5 .5     1 .5 0     0 -.5 -.5
@@ -169,12 +174,12 @@ public class RayTracer {
         ColorVec background = ColorVec.toColorVec(new Vector3f(.2f, .2f, .2f));
         scene.setBackgroundColor(background);
 
-        Sphere sphere1 = new Sphere(.05f, new Vector3f(.0f, .1f, .0f));
+        Sphere sphere1 = new Sphere(.1f, new Vector3f(.0f, .0f, .0f));
         sphere1.setColorProperties(
-                ColorVec.toColorVec(new Vector3f(1.f, 1.f, 1.f)),
+                ColorVec.toColorVec(new Vector3f(1.f, 0.f, 0.f)),
                 ColorVec.toColorVec(new Vector3f(1.f, 1.f, 1.f)),
                 .8f, .1f, .1f, 4);
-//        scene.addObject(sphere1);
+        scene.addObject(sphere1);
 
 //        Polygon polygon1 = new Polygon(
 //                new Vector3f(0.f, 0.1f, -0.1f),
@@ -187,12 +192,12 @@ public class RayTracer {
 //                .7f, .2f, .1f, 32);
 //        scene.addObject(polygon1);
 
-        Plane plane = new Plane(new Vector3f(0.0f, -1f, 0f), 1.6f);
-        plane.setColorProperties(
-                ColorVec.toColorVec(new Vector3f(0f, 0f, 1f)),
-                ColorVec.toColorVec(new Vector3f(1f, 1f, 1f)),
-                .7f, .2f, .1f, 32);
-        scene.addObject(plane);
+//        Plane plane = new Plane(new Vector3f(0.0f, -1f, 0f), 1.6f);
+//        plane.setColorProperties(
+//                ColorVec.toColorVec(new Vector3f(0f, 0f, 1f)),
+//                ColorVec.toColorVec(new Vector3f(1f, 1f, 1f)),
+//                .7f, .2f, .1f, 32);
+//        scene.addObject(plane);
 
 
         return scene;

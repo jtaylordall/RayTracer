@@ -44,11 +44,9 @@ public abstract class Intersectable {
     }
 
 
-    public ColorVec getColor(Vector3f direction, Vector3f normal,
-                             Vector3f lightDir, ColorVec lightCol) {
+    public ColorVec getColor(Vector3f direction, Vector3f normal, ColorVec reflectColor) {
         return ColorVec.calculateColor(direction, normal,
-                lightDir, lightCol,
-                od, os, kd, ks, ka, kGls);
+                od, os, reflectColor, kd, ks, ka, kGls);
     }
 
     public abstract Intersection intersection(Ray ray);

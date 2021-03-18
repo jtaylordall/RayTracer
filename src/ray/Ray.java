@@ -12,12 +12,11 @@ public class Ray {
     public Vector3f origin;
     public Vector3f direction;
     public IntersectionPoint intersectionPoint;
-    public int depth;
+    public static int MAX_DEPTH = 2;
 
     public Ray(Vector3f origin, Vector3f direction) {
         this.origin = origin;
         this.direction = direction;
-        depth = 0;
     }
 
     public Vector3f getPointAtT(float t) {
@@ -29,14 +28,7 @@ public class Ray {
         return v;
     }
 
-    public ColorVec trace(List<Intersectable> objects, Pixel pixel) {
-
-        if (pixel.screenCoordinate.x == 500 && pixel.screenCoordinate.y == 500) {
-            System.out.println();
-//            ColorVec colorVec = new ColorVec();
-//            colorVec.red();
-//            return colorVec;
-        }
+    public ColorVec trace(List<Intersectable> objects, int depth) {
 
         boolean isInShadow = false;
         IntersectionPoint closest = null;
@@ -55,13 +47,33 @@ public class Ray {
                 }
             }
         }
-        if (closest != null) {
-            if (isInShadow) return Scene.ambientColor;
+        if (closest == null) {
+            if (depth > 0 && depth < MAX_DEPTH) {
+                Intersection intersection = Scene.lightDirection.intersection(this);
+                if (intersection.intersects() == Intersection.Interaction.LIGHT)
+//                    return Scene.lightDirection.od;
+                    return new ColorVec(0, 0, 0);
+            }
+            return Scene.backgroundColor;
+
+        } else {
+
+            if (isInShadow && depth == 0) return Scene.ambientColor;
+            else if (isInShadow && depth > 0) return new ColorVec(0, 0, 0);
+            else if (depth == MAX_DEPTH) return new ColorVec(0, 0, 0);
+
             Vector3f view = new Vector3f(origin);
             view.sub(closest.point);
-            return closest.object.getColor(view, closest.normal,
-                    Scene.lightDirection.getDirectionToLight(), Scene.lightDirection.od);
-        } else return Scene.backgroundColor;
+
+            ColorVec reflectCol;
+            if (closest.object.ks > 0f) {
+                reflectCol = closest.transRay.trace(objects, depth + 1);
+            } else reflectCol = closest.object.od;
+
+            ColorVec objectCol = closest.object.getColor(view, closest.normal, reflectCol);
+
+            return objectCol;
+        }
     }
 
     private boolean isInShadow(IntersectionPoint point,
@@ -89,7 +101,6 @@ public class Ray {
         sb.append("origin=").append(origin);
         sb.append(", direction=").append(direction);
         sb.append(", intersectionPoint=").append(intersectionPoint);
-        sb.append(", depth=").append(depth);
         sb.append('}');
         return sb.toString();
     }

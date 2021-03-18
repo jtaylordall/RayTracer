@@ -23,7 +23,6 @@ public class ColorVec extends Vector3i {
         this.z = color.z;
     }
 
-
     public void background() {
         this.x = 100;
         this.y = 100;
@@ -102,84 +101,78 @@ public class ColorVec extends Vector3i {
         );
     }
 
+    public static ColorVec calculateColor1(Vector3f d, Vector3f n, ColorVec objDiffCol,
+                                           ColorVec objSpecCol, ColorVec refCol,
+                                           float kd, float ks, float ka, int kGls) {
 
-    public static ColorVec calculateColor1(Vector3f d, Vector3f n, Vector3f r, Vector3f l,
-                                           ColorVec lightCol, ColorVec od, ColorVec os,
-                                           float ka, float kd, float ks, int kGls) {
+        Vector3f l = Scene.lightDirection.getDirectionToLight();
+        ColorVec lightCol = Scene.lightDirection.od;
 
-        Vector3f lightColF = toVector3f(lightCol);
-        Vector3f odF = toVector3f(od);
-        Vector3f osF = toVector3f(os);
+        ColorVec color = new ColorVec(0, 0, 0);
 
-//        ColorVec color = new ColorVec(0, 0, 0);
+        float ka1 = .4f * ka;
+        float kd1 = 7f * kd;
+        float ks1 = 1f * ks;
 
-        Vector3f ambient = toVector3f(Scene.ambientColor);
-        ambient.mul(odF);
-        ambient.mul(ka);
+        Vector3f ambi = calculateAmbientTerm(Scene.lightDirection.od, objDiffCol);
+//        ambi.mul(ka);
+        ambi.mul(ka1);
+        ambi.add(toVector3f(Scene.ambientColor));
+        color.add(toColorVec(ambi));
 
-        Vector3f diffuse = new Vector3f(odF);
-        diffuse.mul(lightColF);
-        Vector3f vd = new Vector3f(n);
-        float vdDot = vd.dot(l);
-        float difDot = Math.max(vdDot, 0.f);
-        diffuse.mul(difDot);
-        diffuse.mul(kd);
+        Vector3f diff = calculateDiffuseTerm(n, l, lightCol, objDiffCol);
+//        diff.mul(kd);
+        diff.mul(kd1);
+        color.add(toColorVec(diff));
 
-        Vector3f specular = new Vector3f(osF);
-        specular.mul(lightColF);
-        Vector3f vs = new Vector3f(d);
-        float specDot = vs.dot(r);
-        float specDotPow = (float) Math.pow(Math.max(specDot, 0.f), kGls);
-        specular.mul(specDotPow);
-        specular.mul(ks);
+        Vector3f spec = calculateSpecularTerm(d, n, l, lightCol, objSpecCol, kGls);
+//        spec.mul(ks / 2);
+        spec.mul(ks1);
+        color.add(toColorVec(spec));
 
-        Vector3f colorF = new Vector3f(0.f, 0.f, 0.f);
-        colorF.add(ambient);
-        colorF.add(diffuse);
-        colorF.add(specular);
+        Vector3f ref = toVector3f(refCol);
+        spec.mul(ks1);
+//        ref.mul(ks / 2);
+        color.add(toColorVec(ref));
 
-//        color.add(toColorVec(ambient));
-//        color.add(toColorVec(diffuse));
-//        color.add(toColorVec(specular));
-        ColorVec color = toColorVec(colorF);
         ColorVec white = new ColorVec();
         white.white();
-
         color.clip(Scene.ambientColor, white);
         return color;
     }
 
-    public static ColorVec calculateColor(Vector3f d, Vector3f n, Vector3f l,
-                                          ColorVec lightCol, ColorVec od, ColorVec os,
+    public static ColorVec calculateColor(Vector3f d, Vector3f n, ColorVec objDiffCol,
+                                          ColorVec objSpecCol, ColorVec refCol,
                                           float kd, float ks, float ka, int kGls) {
+
+        Vector3f l = Scene.lightDirection.normal;
+        ColorVec lightCol = Scene.lightDirection.od;
 
         ColorVec color = new ColorVec(0, 0, 0);
 
-        float ka1 = .4f;
-        float kd1 = 7f;
-        float ks1 = 3f;
+        float ka1 = 1.5f;
+        float kd1 = 2;
+        float ks1 = 2;
+        float kr1 = .3f;
+        int kGls1 = 2;
 
-        Vector3f ambi = calculateAmbientTerm(lightCol, od);
-        ambi.mul(ka);
-        ambi.mul(ka1);
-        ambi.add(toVector3f(Scene.ambientColor));
+        Vector3f ambi = calculateAmbientTerm(Scene.lightDirection.od, objDiffCol);
+        ambi.mul(ka * ka1);
+//        ambi.add(toVector3f(Scene.ambientColor));
         color.add(toColorVec(ambi));
-//        Vector3f ambi = calculateAmbientTerm(lightCol, od);
-//        ambi.mul(ka);
-//        ambi.mul(ka1);
-//        color.add(toColorVec(ambi));
 
-        Vector3f diff = calculateDiffuseTerm(n, l, lightCol, od);
-        diff.mul(kd);
-        diff.mul(kd1);
-        ColorVec diffC = toColorVec(diff);
-        color.add(diffC);
+        Vector3f diff = calculateDiffuseTerm(n, Scene.lightDirection.getDirectionToLight(),
+                lightCol, objDiffCol);
+        diff.mul(kd * kd1);
+        color.add(toColorVec(diff));
 
-        Vector3f spec = calculateSpecularTerm(d, n, l, lightCol, os, kGls);
-        spec.mul(ks);
-        spec.mul(ks1);
-        ColorVec specC = toColorVec(spec);
-        color.add(specC);
+        Vector3f spec = calculateSpecularTerm(d, n, l, lightCol, objSpecCol, kGls * kGls1);
+        spec.mul(ks * ks1);
+        color.add(toColorVec(spec));
+
+        Vector3f ref = toVector3f(refCol);
+        ref.mul(ks * kr1);
+        color.add(toColorVec(ref));
 
         ColorVec white = new ColorVec();
         white.white();
@@ -191,20 +184,6 @@ public class ColorVec extends Vector3i {
         x += v.x;
         y += v.y;
         z += v.z;
-    }
-
-    private static Vector3f clip(Vector3f v) {
-        float max = 0f;
-        float min = 0f;
-
-        v.x = Math.min(v.x, max);
-        v.y = Math.min(v.y, max);
-        v.z = Math.min(v.z, max);
-
-        v.x = Math.max(v.x, min);
-        v.y = Math.max(v.y, min);
-        v.z = Math.max(v.z, min);
-        return v;
     }
 
     private static Vector3f calculateAmbientTerm(ColorVec lightCol, ColorVec od) {
@@ -246,19 +225,6 @@ public class ColorVec extends Vector3i {
         sDot = (float) Math.pow(sDot, kGls);
         spec.mul(sDot);
         return spec;
-    }
-
-    public void clip() {
-        int max = 255;
-        int min = 0;
-
-        x = Math.min(x, max);
-        y = Math.min(y, max);
-        z = Math.min(z, max);
-
-        x = Math.max(x, min);
-        y = Math.max(y, min);
-        z = Math.max(z, min);
     }
 
     public void clip(ColorVec min, ColorVec max) {
