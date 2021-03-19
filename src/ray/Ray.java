@@ -77,7 +77,7 @@ public class Ray {
             ColorVec reflectCol;
             if (closest.object.ks > 0f) {
                 reflectCol = closest.transRay.trace(objects, depth + 1);
-            } else reflectCol = closest.object.od;
+            } else reflectCol = closest.object.diffuseColor;
 
             return closest.object.getColor(view, closest.normal, reflectCol);
         }

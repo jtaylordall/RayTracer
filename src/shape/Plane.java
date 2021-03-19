@@ -51,8 +51,8 @@ public class Plane extends Intersectable {
         final StringBuilder sb = new StringBuilder("Plane{");
         sb.append("normal=").append(normal);
         sb.append(", distance=").append(distance);
-        sb.append(", od=").append(od);
-        sb.append(", os=").append(os);
+        sb.append(", od=").append(diffuseColor);
+        sb.append(", os=").append(specularColor);
         sb.append(", ka=").append(ka);
         sb.append(", kd=").append(kd);
         sb.append(", ks=").append(ks);

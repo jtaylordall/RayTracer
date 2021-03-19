@@ -14,7 +14,7 @@ public class LightPlane extends Plane {
 
     public LightPlane(Vector3f normal, float distance, ColorVec colorVec) {
         super(normal, distance);
-        this.od = colorVec;
+        this.diffuseColor = colorVec;
     }
 
     @Override

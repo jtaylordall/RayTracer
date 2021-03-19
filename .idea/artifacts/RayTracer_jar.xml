@@ -1,0 +1,10 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="RayTracer:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/RayTracer_jar</output-path>
+    <root id="archive" name="RayTracer.jar">
+      <element id="module-output" name="RayTracer" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/google/code/gson/gson/2.8.6/gson-2.8.6.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/joml/joml/1.10.0/joml-1.10.0.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>

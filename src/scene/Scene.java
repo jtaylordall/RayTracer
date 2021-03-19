@@ -169,9 +169,9 @@ public class Scene {
 
                 ColorVec color = new Ray(origin, direction).trace(objects, 0);
                 int[] data = new int[3];
-                data[0] = color.x;
-                data[1] = color.y;
-                data[2] = color.z;
+                data[0] = color.r;
+                data[1] = color.g;
+                data[2] = color.b;
                 imageWriter.write(data);
             }
         }

@@ -69,8 +69,8 @@ public class Sphere extends Intersectable {
         final StringBuilder sb = new StringBuilder("Sphere{");
         sb.append("radius=").append(radius);
         sb.append(", center=").append(center);
-        sb.append(", od=").append(od);
-        sb.append(", os=").append(os);
+        sb.append(", od=").append(diffuseColor);
+        sb.append(", os=").append(specularColor);
         sb.append(", ka=").append(ka);
         sb.append(", kd=").append(kd);
         sb.append(", ks=").append(ks);

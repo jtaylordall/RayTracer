@@ -1,0 +1,134 @@
+{
+  "name": "specular",
+  "maxRayDepth": 4,
+  "fov": 55,
+  "lookAt": {
+    "x": 0,
+    "y": 0,
+    "z": 0
+  },
+  "lookFrom": {
+    "x": 0,
+    "y": 0,
+    "z": 1.2
+  },
+  "lookUp": {
+    "x": 0,
+    "y": 1,
+    "z": 0
+  },
+  "lightDistance": 50,
+  "lightDirection": {
+    "x": 0,
+    "y": -1,
+    "z": 0
+  },
+  "lightColor": {
+    "r": 255,
+    "g": 255,
+    "b": 255
+  },
+  "ambientColor": {
+    "r": 0,
+    "g": 0,
+    "b": 0
+  },
+  "backgroundColor": {
+    "r": 51,
+    "g": 51,
+    "b": 51
+  },
+  "spheres": [
+    {
+      "radius": 0.2,
+      "center": {
+        "x": 0,
+        "y": 0.3,
+        "z": 0
+      },
+      "diffuseColor": {
+        "r": 191,
+        "g": 191,
+        "b": 191
+      },
+      "specularColor": {
+        "r": 1,
+        "g": 1,
+        "b": 1
+      },
+      "kd": 0,
+      "ks": 1,
+      "ka": 0.25,
+      "kGls": 10
+    }
+  ],
+  "triangles": [
+    {
+      "vertices": [
+        {
+          "x": 0,
+          "y": -0.5,
+          "z": 0.5
+        },
+        {
+          "x": 1,
+          "y": 0.5,
+          "z": 0
+        },
+        {
+          "x": 0,
+          "y": -0.5,
+          "z": -0.5
+        }
+      ],
+      "diffuseColor": {
+        "r": 0,
+        "g": 0,
+        "b": 255
+      },
+      "specularColor": {
+        "r": 255,
+        "g": 255,
+        "b": 255
+      },
+      "kd": 0.9,
+      "ks": 0,
+      "ka": 0.1,
+      "kGls": 4
+    },
+    {
+      "vertices": [
+        {
+          "x": 0,
+          "y": -0.5,
+          "z": 0.5
+        },
+        {
+          "x": 0,
+          "y": -0.5,
+          "z": -0.5
+        },
+        {
+          "x": -1,
+          "y": 0.5,
+          "z": 0
+        }
+      ],
+      "diffuseColor": {
+        "r": 255,
+        "g": 255,
+        "b": 0
+      },
+      "specularColor": {
+        "r": 255,
+        "g": 255,
+        "b": 255
+      },
+      "kd": 0.9,
+      "ks": 0,
+      "ka": 0.1,
+      "kGls": 4
+    }
+  ],
+  "planes": []
+}

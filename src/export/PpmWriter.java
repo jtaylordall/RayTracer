@@ -1,6 +1,5 @@
 package export;
 
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Random;
@@ -9,7 +8,8 @@ public class PpmWriter implements ImageWriter {
 
     private String fileName;
     private FileWriter writer;
-    private int w, h;
+    private final int w;
+    private final int h;
 
     public PpmWriter(String fileName, int w, int h) {
         this.fileName = fileName;
@@ -55,26 +55,11 @@ public class PpmWriter implements ImageWriter {
     }
 
     public String createFile(String fileName) {
-
         fileName = checkFileType(fileName);
-        try {
-            System.out.println(fileName);
-            File file = new File(fileName);
-            if (file.createNewFile()) {
-                System.out.println("File created: " + file.getName());
-            } else {
-                System.out.println("Writing over file " + file.getName());
-            }
-            return fileName;
-        } catch (IOException e) {
-            System.out.println("An error occurred.");
-            e.printStackTrace();
-        }
-        return null;
+        return fileName;
     }
 
     String checkFileType(String fileName) {
-        fileName = "./images/" + fileName;
         String fileType = ".ppm";
         if (!fileName.endsWith(fileType)) return fileName + fileType;
         else return fileName;

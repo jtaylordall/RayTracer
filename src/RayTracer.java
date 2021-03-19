@@ -1,29 +1,62 @@
+import export.FormatWriter;
 import export.ImageWriter;
 import export.PpmWriter;
 import org.joml.Vector3f;
 import scene.Scene;
 import scene.SceneImporter;
-import shape.*;
+import shape.ColorVec;
+import shape.LightPlane;
+import shape.Sphere;
+import shape.Triangle;
 
 public class RayTracer {
+
+    private static final String PREPEND_STRING = "rtx_";
+
     public static void main(String[] args) {
 
+        String format = "jpeg";
         if (args.length < 3)
             usage();
 
         String jsonFile = args[0];
         String width = args[1];
         String height = args[2];
+        if (args.length > 3)
+            format = args[3];
 
-        Dimensions d = validateDimensions(width, height);
+        Dimensions dim = validateDimensions(width, height);
         Scene scene = SceneImporter.importScene(jsonFile);
 
-        ImageWriter imageWriter = new PpmWriter("rtx_" + scene.name, d.width, d.height);
-        scene.rayTrace(d.width, d.height, imageWriter);
+        String name = PREPEND_STRING + scene.name + "_" + width + "x" + height;
+        ImageWriter imageWriter = getImageWriter(format, name, dim);
+
+        scene.rayTrace(dim.width, dim.height, imageWriter);
     }
 
+    private static ImageWriter getImageWriter(String format, String name, Dimensions dim) {
+
+        ImageWriter imageWriter = null;
+
+        switch (format) {
+            case "ppm" -> imageWriter = new PpmWriter(name, dim.width, dim.height);
+            case "jpeg" -> imageWriter = new FormatWriter(name, dim.width, dim.height, FormatWriter.Format.JPEG);
+            case "png" -> imageWriter = new FormatWriter(name, dim.width, dim.height, FormatWriter.Format.PNG);
+            case "gif" -> imageWriter = new FormatWriter(name, dim.width, dim.height, FormatWriter.Format.GIF);
+            case "bpm" -> imageWriter = new FormatWriter(name, dim.width, dim.height, FormatWriter.Format.BPM);
+            case "wbpm" -> imageWriter = new FormatWriter(name, dim.width, dim.height, FormatWriter.Format.WBPM);
+            default -> {
+                System.err.printf("%s is an invalid image type\n", format);
+                System.exit(-1);
+            }
+        }
+        return imageWriter;
+    }
+
+
     private static void usage() {
-        System.err.println("usage: java RayTracer <jsonFile> <width> <height>\n");
+        System.err.println("usage: java RayTracer <json_filename> <width> <height> <format>\n" +
+                "supported formats: png, jpg, gif, ppm, bpm, wbpm");
         System.exit(-1);
     }
 
@@ -57,8 +90,8 @@ public class RayTracer {
         scene.setFov(28);
 
         LightPlane lightDirection = new LightPlane(new Vector3f(-1.f, .0f, 0f), 50);
-        lightDirection.od = new ColorVec();
-        lightDirection.od.white();
+        lightDirection.diffuseColor = new ColorVec();
+        lightDirection.diffuseColor.white();
         scene.setLightPlane(lightDirection);
 
         ColorVec ambient = ColorVec.toColorVec(new Vector3f(.1f, .1f, .1f));
@@ -131,8 +164,8 @@ public class RayTracer {
         scene.setFov(55);
 
         LightPlane lightDirection = new LightPlane(new Vector3f(0f, -1f, 0f), 50);
-        lightDirection.od = new ColorVec();
-        lightDirection.od.white();
+        lightDirection.diffuseColor = new ColorVec();
+        lightDirection.diffuseColor.white();
         scene.setLightPlane(lightDirection);
 
         ColorVec ambient = ColorVec.toColorVec(new Vector3f(0f, 0f, 0f));
@@ -175,64 +208,6 @@ public class RayTracer {
                 ColorVec.toColorVec(new Vector3f(1f, 1f, 1f)),
                 .9f, .0f, .1f, 4);
         scene.addObject(triangle2);
-
-        return scene;
-    }
-
-    static Scene getCustomScene() {
-
-        Scene scene = new Scene("custom");
-
-        scene.setLookAt(new Vector3f(0, 0, 0));
-        scene.setLookFrom(new Vector3f(.2f, .5f, 1));
-        scene.setLookUp(new Vector3f(0, 1, 0));
-        scene.setFov(40);
-
-        LightPlane lightDirection = new LightPlane(new Vector3f(.0f, -1.f, 0f), 50);
-        lightDirection.od = new ColorVec(255, 255, 255);
-        scene.setLightPlane(lightDirection);
-        scene.setAmbientColor(new ColorVec(20, 20, 20));
-        scene.setBackgroundColor(new ColorVec(50, 50, 50));
-
-        Sphere sphere1 = new Sphere(.1f, new Vector3f(.6f, -.4f, -.3f));
-        sphere1.setColorProperties(
-                new ColorVec(50, 255, 40),
-                new ColorVec(255, 255, 255),
-                .9f, .1f, .1f, 60);
-        scene.addObject(sphere1);
-
-        Sphere sphere2 = new Sphere(.3f, new Vector3f(0f, -.5f, -1f));
-        sphere2.setColorProperties(
-                new ColorVec(150, 50, 50),
-                new ColorVec(255, 255, 255),
-                .6f, .8f, .2f, 40);
-        scene.addObject(sphere2);
-
-        Triangle triangle1 = new Triangle(
-                new Vector3f(-.7f, -.2f, 0),
-                new Vector3f(-.5f, .2f, -.2f),
-                new Vector3f(-.3f, -.2f, 0)
-        );
-        triangle1.setColorProperties(
-                new ColorVec(0, 70, 240),
-                new ColorVec(255, 255, 255),
-                1f, 0f, 1f, 4);
-        scene.addObject(triangle1);
-
-        Plane plane = new Plane(new Vector3f(0f, 0f, 1f), 4f);
-        plane.setColorProperties(
-                new ColorVec(255, 255, 255),
-                new ColorVec(1, 1, 1),
-                1f, 2f, 0f, 32);
-        scene.addObject(plane);
-
-        Plane plane2 = new Plane(new Vector3f(0f, 1f, 0f), 2f);
-        plane2.setColorProperties(
-                new ColorVec(150, 150, 150),
-                new ColorVec(1, 1, 1),
-                1f, 0f, .5f, 32);
-        scene.addObject(plane2);
-
 
         return scene;
     }

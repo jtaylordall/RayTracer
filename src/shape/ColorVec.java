@@ -2,93 +2,94 @@ package shape;
 
 import org.joml.Random;
 import org.joml.Vector3f;
-import org.joml.Vector3i;
 import scene.Scene;
 
-public class ColorVec extends Vector3i {
+public class ColorVec {
+
+    public int r, g, b;
 
     public ColorVec() {
         background();
     }
 
     public ColorVec(int r, int g, int b) {
-        this.x = r;
-        this.y = g;
-        this.z = b;
+        this.r = r;
+        this.g = g;
+        this.b = b;
     }
 
     public ColorVec(ColorVec color) {
-        this.x = color.x;
-        this.y = color.y;
-        this.z = color.z;
+        this.r = color.r;
+        this.g = color.g;
+        this.b = color.b;
     }
 
     public void background() {
-        this.x = 100;
-        this.y = 100;
-        this.z = 100;
+        this.r = 100;
+        this.g = 100;
+        this.b = 100;
     }
 
     public void random() {
         Random random = new Random();
-        this.x = random.nextInt(255);
-        this.y = random.nextInt(255);
-        this.z = random.nextInt(255);
+        this.r = random.nextInt(255);
+        this.g = random.nextInt(255);
+        this.b = random.nextInt(255);
     }
 
     public void black() {
-        this.x = 0;
-        this.y = 0;
-        this.z = 0;
+        this.r = 0;
+        this.g = 0;
+        this.b = 0;
     }
 
     public void white() {
-        this.x = 255;
-        this.y = 255;
-        this.z = 255;
+        this.r = 255;
+        this.g = 255;
+        this.b = 255;
     }
 
     public void red() {
-        this.x = 255;
-        this.y = 0;
-        this.z = 0;
+        this.r = 255;
+        this.g = 0;
+        this.b = 0;
     }
 
     public void green() {
-        this.x = 0;
-        this.y = 255;
-        this.z = 0;
+        this.r = 0;
+        this.g = 255;
+        this.b = 0;
     }
 
     public void blue() {
-        this.x = 0;
-        this.y = 0;
-        this.z = 255;
+        this.r = 0;
+        this.g = 0;
+        this.b = 255;
     }
 
     public void purple() {
-        this.x = 196;
-        this.y = 0;
-        this.z = 255;
+        this.r = 196;
+        this.g = 0;
+        this.b = 255;
     }
 
     public void yellow() {
-        this.x = 255;
-        this.y = 255;
-        this.z = 0;
+        this.r = 255;
+        this.g = 255;
+        this.b = 0;
     }
 
     public void orange() {
-        this.x = 255;
-        this.y = 128;
-        this.z = 0;
+        this.r = 255;
+        this.g = 128;
+        this.b = 0;
     }
 
     public static Vector3f toVector3f(ColorVec color) {
         return new Vector3f(
-                ((float) color.x) / 255.f,
-                ((float) color.y) / 255.f,
-                ((float) color.z) / 255.f
+                ((float) color.r) / 255.f,
+                ((float) color.g) / 255.f,
+                ((float) color.b) / 255.f
         );
 
     }
@@ -106,7 +107,7 @@ public class ColorVec extends Vector3i {
                                            float kd, float ks, float ka, int kGls) {
 
         Vector3f l = Scene.lightPlane.getDirectionToLight();
-        ColorVec lightCol = Scene.lightPlane.od;
+        ColorVec lightCol = Scene.lightPlane.diffuseColor;
 
         ColorVec color = new ColorVec(0, 0, 0);
 
@@ -114,7 +115,7 @@ public class ColorVec extends Vector3i {
         float kd1 = 7f * kd;
         float ks1 = 1f * ks;
 
-        Vector3f ambi = calculateAmbientTerm(Scene.lightPlane.od, objDiffCol);
+        Vector3f ambi = calculateAmbientTerm(Scene.lightPlane.diffuseColor, objDiffCol);
 //        ambi.mul(ka);
         ambi.mul(ka1);
         ambi.add(toVector3f(Scene.ambientColor));
@@ -146,7 +147,7 @@ public class ColorVec extends Vector3i {
                                           float kd, float ks, float ka, int kGls) {
 
         Vector3f l = Scene.lightPlane.normal;
-        ColorVec lightCol = Scene.lightPlane.od;
+        ColorVec lightCol = Scene.lightPlane.diffuseColor;
 
         ColorVec color = new ColorVec(0, 0, 0);
 
@@ -156,7 +157,7 @@ public class ColorVec extends Vector3i {
         float kr1 = .3f;
         int kGls1 = 1;
 
-        Vector3f ambi = calculateAmbientTerm(Scene.lightPlane.od, objDiffCol);
+        Vector3f ambi = calculateAmbientTerm(Scene.lightPlane.diffuseColor, objDiffCol);
         ambi.mul(ka * ka1);
         color.add(toColorVec(ambi));
 
@@ -180,9 +181,9 @@ public class ColorVec extends Vector3i {
     }
 
     public void add(ColorVec v) {
-        x += v.x;
-        y += v.y;
-        z += v.z;
+        r += v.r;
+        g += v.g;
+        b += v.b;
     }
 
     private static Vector3f calculateAmbientTerm(ColorVec lightCol, ColorVec od) {
@@ -227,13 +228,13 @@ public class ColorVec extends Vector3i {
 
     public void clip(ColorVec min, ColorVec max) {
 
-        x = Math.min(x, max.x);
-        y = Math.min(y, max.y);
-        z = Math.min(z, max.z);
+        r = Math.min(r, max.r);
+        g = Math.min(g, max.g);
+        b = Math.min(b, max.b);
 
-        x = Math.max(x, min.x);
-        y = Math.max(y, min.y);
-        z = Math.max(z, min.z);
+        r = Math.max(r, min.r);
+        g = Math.max(g, min.g);
+        b = Math.max(b, min.b);
     }
 
     @Override

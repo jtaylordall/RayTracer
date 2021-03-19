@@ -6,8 +6,8 @@ import ray.Ray;
 
 public abstract class Intersectable {
 
-    public ColorVec od;
-    public ColorVec os;
+    public ColorVec diffuseColor;
+    public ColorVec specularColor;
     public float ka;
     public float kd;
     public float ks;
@@ -17,8 +17,8 @@ public abstract class Intersectable {
     }
 
     public Intersectable(ColorVec od, ColorVec os, float kd, float ks, float ka, int kGls) {
-        this.od = od;
-        this.os = os;
+        this.diffuseColor = od;
+        this.specularColor = os;
         this.ka = ka;
         this.kd = kd;
         this.ks = ks;
@@ -26,8 +26,8 @@ public abstract class Intersectable {
     }
 
     public void setColorProperties(ColorVec od, ColorVec os, float kd, float ks, float ka, int kGls) {
-        this.od = od;
-        this.os = os;
+        this.diffuseColor = od;
+        this.specularColor = os;
         this.kd = kd;
         this.ks = ks;
         this.ka = ka;
@@ -35,8 +35,8 @@ public abstract class Intersectable {
     }
 
     public void setColorProperties(Vector3f od, Vector3f os, float kd, float ks, float ka, int kGls) {
-        this.od = ColorVec.toColorVec(od);
-        this.os = ColorVec.toColorVec(os);
+        this.diffuseColor = ColorVec.toColorVec(od);
+        this.specularColor = ColorVec.toColorVec(os);
         this.kd = kd;
         this.ks = ks;
         this.ka = ka;
@@ -46,7 +46,7 @@ public abstract class Intersectable {
 
     public ColorVec getColor(Vector3f direction, Vector3f normal, ColorVec reflectColor) {
         return ColorVec.calculateColor(direction, normal,
-                od, os, reflectColor, kd, ks, ka, kGls);
+                diffuseColor, specularColor, reflectColor, kd, ks, ka, kGls);
     }
 
     public abstract Intersection calculateIntersection(Ray ray);
