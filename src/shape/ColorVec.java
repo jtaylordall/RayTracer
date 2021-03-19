@@ -3,7 +3,7 @@ package shape;
 import org.joml.Random;
 import org.joml.Vector3f;
 import org.joml.Vector3i;
-import tracer.Scene;
+import scene.Scene;
 
 public class ColorVec extends Vector3i {
 
@@ -105,8 +105,8 @@ public class ColorVec extends Vector3i {
                                            ColorVec objSpecCol, ColorVec refCol,
                                            float kd, float ks, float ka, int kGls) {
 
-        Vector3f l = Scene.lightDirection.getDirectionToLight();
-        ColorVec lightCol = Scene.lightDirection.od;
+        Vector3f l = Scene.lightPlane.getDirectionToLight();
+        ColorVec lightCol = Scene.lightPlane.od;
 
         ColorVec color = new ColorVec(0, 0, 0);
 
@@ -114,7 +114,7 @@ public class ColorVec extends Vector3i {
         float kd1 = 7f * kd;
         float ks1 = 1f * ks;
 
-        Vector3f ambi = calculateAmbientTerm(Scene.lightDirection.od, objDiffCol);
+        Vector3f ambi = calculateAmbientTerm(Scene.lightPlane.od, objDiffCol);
 //        ambi.mul(ka);
         ambi.mul(ka1);
         ambi.add(toVector3f(Scene.ambientColor));
@@ -145,8 +145,8 @@ public class ColorVec extends Vector3i {
                                           ColorVec objSpecCol, ColorVec refCol,
                                           float kd, float ks, float ka, int kGls) {
 
-        Vector3f l = Scene.lightDirection.normal;
-        ColorVec lightCol = Scene.lightDirection.od;
+        Vector3f l = Scene.lightPlane.normal;
+        ColorVec lightCol = Scene.lightPlane.od;
 
         ColorVec color = new ColorVec(0, 0, 0);
 
@@ -156,11 +156,11 @@ public class ColorVec extends Vector3i {
         float kr1 = .3f;
         int kGls1 = 1;
 
-        Vector3f ambi = calculateAmbientTerm(Scene.lightDirection.od, objDiffCol);
+        Vector3f ambi = calculateAmbientTerm(Scene.lightPlane.od, objDiffCol);
         ambi.mul(ka * ka1);
         color.add(toColorVec(ambi));
 
-        Vector3f diff = calculateDiffuseTerm(n, Scene.lightDirection.getDirectionToLight(),
+        Vector3f diff = calculateDiffuseTerm(n, Scene.lightPlane.getDirectionToLight(),
                 lightCol, objDiffCol);
         diff.mul(kd * kd1);
         color.add(toColorVec(diff));

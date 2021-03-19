@@ -1,5 +1,8 @@
 package shape;
 
+import instersection.Intersection;
+import instersection.IntersectionPoint;
+import instersection.NullIntersection;
 import org.joml.Vector3f;
 import ray.*;
 
@@ -19,7 +22,7 @@ public class Sphere extends Intersectable {
     }
 
     @Override
-    public Intersection intersection(Ray ray) {
+    public Intersection calculateIntersection(Ray ray) {
         ray.direction.normalize();
 
         //  origin_center: oc = sc - ro

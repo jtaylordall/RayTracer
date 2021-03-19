@@ -1,5 +1,9 @@
 package shape;
 
+import instersection.BackPlaneIntersection;
+import instersection.Intersection;
+import instersection.IntersectionPoint;
+import instersection.NullIntersection;
 import org.joml.Vector3f;
 import ray.*;
 
@@ -14,7 +18,7 @@ public class Plane extends Intersectable {
     }
 
     @Override
-    public Intersection intersection(Ray ray) {
+    public Intersection calculateIntersection(Ray ray) {
         normal.normalize();
         Vector3f n = new Vector3f(normal);
         ray.direction.normalize();

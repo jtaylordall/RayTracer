@@ -1,8 +1,12 @@
 package shape;
 
+import instersection.Intersection;
+import instersection.IntersectionPoint;
+import instersection.NullIntersection;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
-import ray.*;
+import ray.Ray;
+import ray.TransmissionRay;
 
 public class Triangle extends Intersectable {
 
@@ -39,9 +43,11 @@ public class Triangle extends Intersectable {
     }
 
     @Override
-    public Intersection intersection(Ray ray) {
-
+    public Intersection calculateIntersection(Ray ray) {
+        if (normal == null)
+            normal = calculateNormal(this.vertices);
         normal.normalize();
+
         Vector3f n = new Vector3f(normal);
         ray.direction.normalize();
         float vd = ray.direction.dot(n);

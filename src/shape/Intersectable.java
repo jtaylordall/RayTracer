@@ -1,7 +1,7 @@
 package shape;
 
 import org.joml.Vector3f;
-import ray.Intersection;
+import instersection.Intersection;
 import ray.Ray;
 
 public abstract class Intersectable {
@@ -49,7 +49,7 @@ public abstract class Intersectable {
                 od, os, reflectColor, kd, ks, ka, kGls);
     }
 
-    public abstract Intersection intersection(Ray ray);
+    public abstract Intersection calculateIntersection(Ray ray);
 
     protected void fudgePoint(Vector3f point, Vector3f normal) {
         float fudgeAmount = .001f;
