@@ -5,7 +5,8 @@ import instersection.Intersection;
 import instersection.IntersectionPoint;
 import instersection.NullIntersection;
 import org.joml.Vector3f;
-import ray.*;
+import ray.Ray;
+import ray.TransmissionRay;
 
 public class Plane extends Intersectable {
 
@@ -44,20 +45,5 @@ public class Plane extends Intersectable {
         TransmissionRay trans = new TransmissionRay(point, ray.direction, n);
         ray.intersectionPoint = new IntersectionPoint(ray, trans, point, n, t, this);
         return ray.intersectionPoint;
-    }
-
-    @Override
-    public String toString() {
-        final StringBuilder sb = new StringBuilder("Plane{");
-        sb.append("normal=").append(normal);
-        sb.append(", distance=").append(distance);
-        sb.append(", od=").append(diffuseColor);
-        sb.append(", os=").append(specularColor);
-        sb.append(", ka=").append(ka);
-        sb.append(", kd=").append(kd);
-        sb.append(", ks=").append(ks);
-        sb.append(", kGls=").append(kGls);
-        sb.append('}');
-        return sb.toString();
     }
 }

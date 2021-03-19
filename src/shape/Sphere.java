@@ -4,7 +4,8 @@ import instersection.Intersection;
 import instersection.IntersectionPoint;
 import instersection.NullIntersection;
 import org.joml.Vector3f;
-import ray.*;
+import ray.Ray;
+import ray.TransmissionRay;
 
 public class Sphere extends Intersectable {
 
@@ -64,18 +65,4 @@ public class Sphere extends Intersectable {
         return normal;
     }
 
-    @Override
-    public String toString() {
-        final StringBuilder sb = new StringBuilder("Sphere{");
-        sb.append("radius=").append(radius);
-        sb.append(", center=").append(center);
-        sb.append(", od=").append(diffuseColor);
-        sb.append(", os=").append(specularColor);
-        sb.append(", ka=").append(ka);
-        sb.append(", kd=").append(kd);
-        sb.append(", ks=").append(ks);
-        sb.append(", kGls=").append(kGls);
-        sb.append('}');
-        return sb.toString();
-    }
 }

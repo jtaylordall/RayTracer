@@ -33,11 +33,6 @@ public class Scene {
         objects = new ArrayList<>();
     }
 
-    public Scene(String name) {
-        this.name = name;
-        this.objects = new ArrayList<>();
-    }
-
     public void setLightPlane(LightPlane lightDirection) {
         Scene.lightPlane = lightDirection;
     }

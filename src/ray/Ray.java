@@ -100,13 +100,4 @@ public class Ray {
         }
         return false;
     }
-
-
-    @Override
-    public String toString() {
-        return "Ray{" + "origin=" + origin +
-                ", direction=" + direction +
-                ", intersectionPoint=" + intersectionPoint +
-                '}';
-    }
 }
