@@ -29,7 +29,11 @@ public class RayTracer {
         String name = PREPEND_STRING + scene.name + "_" + width + "x" + height;
         ImageWriter imageWriter = getImageWriter(format, name, dim);
 
-        scene.rayTrace(dim.width, dim.height, imageWriter);
+        new RayTracer().rayTraceScene(scene, dim.width, dim.height, imageWriter);
+    }
+
+    public void rayTraceScene(Scene scene, int width, int height, ImageWriter imageWriter) {
+        scene.rayTrace(width, height, imageWriter);
     }
 
     private static ImageWriter getImageWriter(String format, String name, Dimensions dim) {
